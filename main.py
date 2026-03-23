@@ -44,6 +44,14 @@ async def root():
     return RedirectResponse(url="/auth/login", status_code=302)
 
 
+from fastapi.responses import PlainTextResponse
+import traceback
+
+@app.exception_handler(Exception)
+async def debug_exception_handler(request: Request, exc: Exception):
+    error_msg = traceback.format_exc()
+    return PlainTextResponse(str(error_msg), status_code=500)
+
 @app.exception_handler(307)
 async def redirect_handler(request: Request, exc):
     return RedirectResponse(url="/auth/login", status_code=302)
