@@ -63,11 +63,12 @@ def get_optional_user(request: Request, db: Session = Depends(get_db)):
         return None
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id: int = payload.get("sub")
+        user_id = payload.get("sub")
         if user_id is None:
             return None
+        user_id = int(str(user_id))
         return db.query(models.User).filter(models.User.id == user_id).first()
-    except JWTError:
+    except (JWTError, ValueError):
         return None
 
 
