@@ -21,7 +21,7 @@ async def dashboard(request: Request, user=Depends(get_current_user_from_cookie)
             anon_messages = db.query(models.AnonymousMessage).filter(
                 models.AnonymousMessage.company_id == company.id
             ).order_by(models.AnonymousMessage.created_at.desc()).limit(10).all()
-        return templates.TemplateResponse(request, "dashboard.html", {
+        return templates.TemplateResponse(request, "dashboard_hr.html", {
             "user": user, "company": company,
             "notifications": notifications, "anon_messages": anon_messages
         })
@@ -29,7 +29,7 @@ async def dashboard(request: Request, user=Depends(get_current_user_from_cookie)
         profile = db.query(models.EmployeeProfile).filter(
             models.EmployeeProfile.user_id == user.id
         ).first()
-        return templates.TemplateResponse(request, "dashboard.html", {
+        return templates.TemplateResponse(request, "dashboard_employee.html", {
             "user": user, "profile": profile,
             "notifications": notifications
         })
