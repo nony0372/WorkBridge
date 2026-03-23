@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}{{ vacancy.title }} — WorkBridge{% endblock %}
+{% block page_title %}{{ vacancy.title }}{% endblock %}
+{% block content %}
+<div class="max-w-3xl space-y-6">
+    <a href="/vacancies/" class="text-indigo-600 hover:text-indigo-700 text-sm">← Назад к вакансиям</a>
+    <div class="bg-white rounded-xl p-8 card-shadow">
+        <h2 class="text-2xl font-bold text-gray-800">{{ vacancy.title }}</h2>
+        {% if company %}
+        <a href="/company/{{ company.id }}" class="text-indigo-600 hover:text-indigo-700 mt-1 inline-block">{{ company.name }}</a>
+        <span class="text-gray-400">·</span>
+        <span class="text-gray-500">{{ company.city }}</span>
+        {% endif %}
+        <div class="flex items-center gap-3 mt-4">
+            {% if vacancy.salary_min or vacancy.salary_max %}
+            <span class="badge bg-emerald-100 text-emerald-700 !text-sm !px-3 !py-1">{{ vacancy.salary_min|int }} — {{ vacancy.salary_max|int }} ₸</span>
+            {% endif %}
+            <span class="badge bg-indigo-100 text-indigo-700 !text-sm !px-3 !py-1">{{ vacancy.employment_type }}</span>
+            {% if vacancy.city %}<span class="badge bg-gray-100 text-gray-700 !text-sm !px-3 !py-1">{{ vacancy.city }}</span>{% endif %}
+        </div>
+        <hr class="my-6">
+        <h3 class="font-semibold text-gray-800 mb-2">Описание</h3>
+        <p class="text-gray-600 whitespace-pre-line">{{ vacancy.description }}</p>
+        {% if vacancy.requirements %}
+        <h3 class="font-semibold text-gray-800 mt-6 mb-2">Требования</h3>
+        <p class="text-gray-600 whitespace-pre-line">{{ vacancy.requirements }}</p>
+        {% endif %}
+    </div>
+    {% if company %}
+    <div class="bg-white rounded-xl p-6 card-shadow">
+        <h3 class="font-semibold text-gray-800 mb-3">О компании</h3>
+        <p class="font-medium text-gray-700">{{ company.name }}</p>
+        <p class="text-gray-500 text-sm">{{ company.industry }} · {{ company.city }}</p>
+        <p class="text-gray-600 mt-2">{{ company.description }}</p>
+        <a href="/reviews/company/{{ company.id }}" class="text-indigo-600 hover:text-indigo-700 text-sm mt-3 inline-block">Отзывы о компании →</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

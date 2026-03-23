@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Отзывы о {{ company.name }} — WorkBridge{% endblock %}
+{% block page_title %}Отзывы о {{ company.name }}{% endblock %}
+{% block content %}
+<div class="max-w-3xl space-y-6">
+    <div class="bg-white rounded-xl p-6 card-shadow">
+        <div class="flex items-center gap-4 mb-4">
+            <div class="text-4xl font-bold text-indigo-600">{{ avg_rating }}</div>
+            <div>
+                <div class="flex text-yellow-400 text-xl">{% for i in range(5) %}{% if i < avg_rating|round %}★{% else %}☆{% endif %}{% endfor %}</div>
+                <p class="text-gray-500 text-sm">{{ reviews|length }} отзывов</p>
+            </div>
+        </div>
+    </div>
+    {% if user.role == 'employee' %}
+    <div class="bg-white rounded-xl p-6 card-shadow" x-data="{ rating: 5 }">
+        <h3 class="font-semibold text-gray-800 mb-4">Оставить отзыв</h3>
+        <form method="POST" action="/reviews/company/{{ company.id }}" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Оценка</label>
+                <div class="flex gap-2">
+                    {% for i in range(1, 6) %}
+                    <button type="button" @click="rating = {{ i }}" class="text-3xl transition-colors"
+                            :class="rating >= {{ i }} ? 'text-yellow-400' : 'text-gray-300'">★</button>
+                    {% endfor %}
+                </div>
+                <input type="hidden" name="rating" :value="rating">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Отзыв</label>
+                <textarea name="text" rows="3" class="input-field"></textarea>
+            </div>
+            <label class="flex items-center gap-2">
+                <input type="checkbox" name="is_anonymous" value="true" class="rounded">
+                <span class="text-sm text-gray-700">Анонимный отзыв</span>
+            </label>
+            <button type="submit" class="btn-primary">Отправить</button>
+        </form>
+    </div>
+    {% endif %}
+    <div class="space-y-4">
+        {% for r in reviews %}
+        <div class="bg-white rounded-xl p-5 card-shadow">
+            <div class="flex items-center justify-between">
+                <div class="flex text-yellow-400">{% for i in range(5) %}{% if i < r.rating %}★{% else %}☆{% endif %}{% endfor %}</div>
+                <span class="text-gray-400 text-sm">{{ r.created_at.strftime('%d.%m.%Y') }}</span>
+            </div>
+            <p class="text-gray-600 mt-2">{{ r.text }}</p>
+            <p class="text-gray-400 text-sm mt-2">— {{ 'Аноним' if r.is_anonymous else r.user.full_name }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

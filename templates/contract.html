@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Трудовой договор — WorkBridge{% endblock %}
+{% block page_title %}Генератор трудового договора{% endblock %}
+{% block content %}
+<div class="max-w-2xl">
+    <div class="bg-white rounded-xl p-6 card-shadow">
+        <p class="text-gray-500 mb-4">ИИ сгенерирует юридически оформленный трудовой договор на выбранном языке. Результат будет доступен для скачивания в PDF.</p>
+        <form method="POST" action="/contract/generate" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ФИО сотрудника</label>
+                    <input type="text" name="employee_name" required class="input-field">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Должность</label>
+                    <input type="text" name="position" required class="input-field">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Зарплата</label>
+                    <input type="number" name="salary" required class="input-field">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Дата начала</label>
+                    <input type="date" name="start_date" required class="input-field">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Испытательный срок (мес.)</label>
+                    <input type="number" name="probation_months" value="3" class="input-field">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Рабочие часы</label>
+                    <input type="text" name="working_hours" value="9:00-18:00" class="input-field">
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Язык договора</label>
+                <select name="language" class="input-field">
+                    <option value="ru">Русский</option>
+                    <option value="kz">Казахский</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-primary">🤖 Сгенерировать и скачать PDF</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

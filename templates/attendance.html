@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Посещаемость — WorkBridge{% endblock %}
+{% block page_title %}Учёт посещаемости{% endblock %}
+{% block content %}
+<div class="space-y-6">
+    <div class="bg-white rounded-xl p-6 card-shadow">
+        <div class="flex items-center justify-between mb-4">
+            <form method="GET" action="/attendance" class="flex items-center gap-3">
+                <input type="date" name="date" value="{{ date }}" class="input-field" onchange="this.form.submit()">
+            </form>
+            <a href="/attendance/export/csv?date={{ date }}" class="btn-secondary text-sm">📥 CSV</a>
+        </div>
+        <form method="POST" action="/attendance" class="flex items-end gap-3 mb-6 border-b pb-6">
+            <input type="hidden" name="date" value="{{ date }}">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Сотрудник</label>
+                <select name="employee_id" required class="input-field">
+                    {% for e in employees %}<option value="{{ e.id }}">{{ e.full_name }}</option>{% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Приход</label>
+                <input type="time" name="arrived_at" class="input-field">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Уход</label>
+                <input type="time" name="left_at" class="input-field">
+            </div>
+            <button type="submit" class="btn-primary">Отметить</button>
+        </form>
+        {% if records|length > 0 %}
+        <table class="w-full">
+            <thead><tr class="border-b">
+                <th class="text-left py-2 text-sm text-gray-500">Сотрудник</th>
+                <th class="text-left py-2 text-sm text-gray-500">Приход</th>
+                <th class="text-left py-2 text-sm text-gray-500">Уход</th>
+            </tr></thead>
+            <tbody>
+            {% for r in records %}
+            <tr class="border-b border-gray-100">
+                <td class="py-3 text-gray-700">{{ r.employee_name }}</td>
+                <td class="py-3 text-gray-600">{{ r.record.arrived_at or '—' }}</td>
+                <td class="py-3 text-gray-600">{{ r.record.left_at or '—' }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-gray-500 text-center py-6">Записи отсутствуют</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

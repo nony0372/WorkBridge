@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Вакансии — WorkBridge{% endblock %}
+{% block page_title %}Вакансии{% endblock %}
+{% block content %}
+<div class="space-y-6">
+    {% if user.role == 'hr' %}
+    <div class="flex justify-end">
+        <a href="/vacancies/create" class="btn-primary">+ Создать вакансию</a>
+    </div>
+    {% endif %}
+    <div class="bg-white rounded-xl p-6 card-shadow">
+        <form method="GET" action="/vacancies/" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+            <input type="text" name="q" value="{{ filters.q }}" placeholder="Ключевое слово" class="input-field">
+            <input type="text" name="city" value="{{ filters.city }}" placeholder="Город" class="input-field">
+            <input type="number" name="salary_min" value="{{ filters.salary_min if filters.salary_min else '' }}" placeholder="Зарплата от" class="input-field">
+            <input type="number" name="salary_max" value="{{ filters.salary_max if filters.salary_max else '' }}" placeholder="Зарплата до" class="input-field">
+            <select name="employment_type" class="input-field">
+                <option value="">Все типы</option>
+                <option value="full-time" {{ 'selected' if filters.employment_type == 'full-time' }}>Полная</option>
+                <option value="part-time" {{ 'selected' if filters.employment_type == 'part-time' }}>Частичная</option>
+                <option value="remote" {{ 'selected' if filters.employment_type == 'remote' }}>Удалённая</option>
+            </select>
+            <button type="submit" class="btn-primary">Поиск</button>
+        </form>
+    </div>
+    <div class="space-y-4">
+        {% for v in vacancies %}
+        <div class="bg-white rounded-xl p-6 card-shadow hover:shadow-lg transition-shadow">
+            <div class="flex items-start justify-between">
+                <div>
+                    <a href="/vacancies/{{ v.id }}" class="text-lg font-semibold text-indigo-600 hover:text-indigo-700">{{ v.title }}</a>
+                    <p class="text-gray-500 text-sm mt-1">{{ v.company.name if v.company else '' }} · {{ v.city }}</p>
+                    <p class="text-gray-600 mt-2 line-clamp-2">{{ v.description[:200] }}{% if v.description|length > 200 %}...{% endif %}</p>
+                    <div class="flex items-center gap-3 mt-3">
+                        {% if v.salary_min or v.salary_max %}
+                        <span class="badge bg-emerald-100 text-emerald-700">{{ v.salary_min|int }} — {{ v.salary_max|int }} ₸</span>
+                        {% endif %}
+                        <span class="badge bg-indigo-100 text-indigo-700">{{ v.employment_type }}</span>
+                        {% if v.industry %}<span class="badge bg-gray-100 text-gray-700">{{ v.industry }}</span>{% endif %}
+                    </div>
+                </div>
+                <a href="/vacancies/{{ v.id }}" class="btn-secondary text-sm">Подробнее</a>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center text-gray-500 py-12">Вакансии не найдены</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+python-dotenv
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+jinja2
+aiofiles
+openai
+reportlab
+apscheduler
+pydantic[email-validation]
+email-validator

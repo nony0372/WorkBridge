@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Резюме — WorkBridge{% endblock %}
+{% block page_title %}Мои резюме{% endblock %}
+{% block content %}
+<div class="space-y-6">
+    <div class="flex justify-end">
+        <a href="/resume/create" class="btn-primary">+ Создать резюме</a>
+    </div>
+    {% if resumes|length > 0 %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% for r in resumes %}
+        <div class="bg-white rounded-xl p-6 card-shadow">
+            <h3 class="font-semibold text-gray-800">{{ r.title }}</h3>
+            <p class="text-sm text-gray-500 mt-1">Создано: {{ r.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
+            <div class="flex gap-2 mt-4">
+                <a href="/resume/download/{{ r.id }}" class="btn-primary text-sm">📄 Скачать PDF</a>
+                <form method="POST" action="/resume/delete/{{ r.id }}" onsubmit="return confirm('Удалить?')">
+                    <button type="submit" class="btn-danger text-sm">Удалить</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center text-gray-500 py-12">Резюме ещё не создано. <a href="/resume/create" class="text-indigo-600">Создать →</a></div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}HR Дашборд — WorkBridge{% endblock %}
+{% block page_title %}HR Дашборд{% endblock %}
+{% block content %}
+<div class="space-y-6">
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800">Добро пожаловать, {{ user.full_name }}!</h2>
+            <p class="text-gray-500 mt-1">
+                {% if company %}Компания: <strong>{{ company.name }}</strong>{% else %}
+                <a href="/company/setup" class="text-indigo-600 font-medium">Настроить компанию →</a>{% endif %}
+            </p>
+        </div>
+        {% if not company %}
+        <a href="/company/setup" class="btn-primary">Создать компанию</a>
+        {% endif %}
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <a href="/vacancies/" class="bg-white rounded-xl p-6 card-shadow hover:shadow-lg transition-shadow border-l-4 border-indigo-500">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.193 23.193 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                </div>
+                <div><h3 class="font-semibold text-gray-800">Вакансии</h3><p class="text-sm text-gray-500">Управление</p></div>
+            </div>
+        </a>
+        <a href="/ai/candidate-search" class="bg-white rounded-xl p-6 card-shadow hover:shadow-lg transition-shadow border-l-4 border-purple-500">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                </div>
+                <div><h3 class="font-semibold text-gray-800">AI-поиск</h3><p class="text-sm text-gray-500">Кандидаты</p></div>
+            </div>
+        </a>
+        <a href="/attendance" class="bg-white rounded-xl p-6 card-shadow hover:shadow-lg transition-shadow border-l-4 border-emerald-500">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div><h3 class="font-semibold text-gray-800">Посещаемость</h3><p class="text-sm text-gray-500">Учёт</p></div>
+            </div>
+        </a>
+        <a href="/analytics" class="bg-white rounded-xl p-6 card-shadow hover:shadow-lg transition-shadow border-l-4 border-amber-500">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                </div>
+                <div><h3 class="font-semibold text-gray-800">Аналитика</h3><p class="text-sm text-gray-500">Сотрудники</p></div>
+            </div>
+        </a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <a href="/contract" class="bg-white rounded-xl p-5 card-shadow hover:shadow-lg transition-shadow">
+            <h3 class="font-semibold text-gray-800 mb-1">📝 Трудовой договор</h3>
+            <p class="text-sm text-gray-500">Генератор AI</p>
+        </a>
+        <a href="/reviews/employees" class="bg-white rounded-xl p-5 card-shadow hover:shadow-lg transition-shadow">
+            <h3 class="font-semibold text-gray-800 mb-1">⭐ Оценки сотрудников</h3>
+            <p class="text-sm text-gray-500">Продуктивность, командная работа</p>
+        </a>
+        <a href="/payroll/" class="bg-white rounded-xl p-5 card-shadow hover:shadow-lg transition-shadow">
+            <h3 class="font-semibold text-gray-800 mb-1">💰 Зарплата</h3>
+            <p class="text-sm text-gray-500">Расчёт и ведомости</p>
+        </a>
+        <a href="/enps/" class="bg-white rounded-xl p-5 card-shadow hover:shadow-lg transition-shadow">
+            <h3 class="font-semibold text-gray-800 mb-1">📊 eNPS</h3>
+            <p class="text-sm text-gray-500">Опросы и аналитика</p>
+        </a>
+        <a href="/hr-requests" class="bg-white rounded-xl p-5 card-shadow hover:shadow-lg transition-shadow">
+            <h3 class="font-semibold text-gray-800 mb-1">📋 Заявления</h3>
+            <p class="text-sm text-gray-500">Управление</p>
+        </a>
+        <a href="/reports" class="bg-white rounded-xl p-5 card-shadow hover:shadow-lg transition-shadow">
+            <h3 class="font-semibold text-gray-800 mb-1">📈 Отчёты</h3>
+            <p class="text-sm text-gray-500">Команда</p>
+        </a>
+    </div>
+    {% if anon_messages|length > 0 %}
+    <div class="bg-white rounded-xl p-6 card-shadow">
+        <h3 class="font-semibold text-gray-800 mb-4">🔒 Анонимные сообщения</h3>
+        <div class="space-y-3">
+            {% for msg in anon_messages %}
+            <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <p class="text-gray-700">{{ msg.message }}</p>
+                <p class="text-xs text-gray-400 mt-2">{{ msg.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

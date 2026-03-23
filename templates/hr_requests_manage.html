@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Управление заявлениями — WorkBridge{% endblock %}
+{% block page_title %}Заявления сотрудников{% endblock %}
+{% block content %}
+<div class="space-y-4">
+    {% for r in requests %}
+    <div class="bg-white rounded-xl p-5 card-shadow">
+        <div class="flex items-center justify-between">
+            <div>
+                <span class="font-medium text-gray-800">{{ r._user.full_name if r._user else 'Неизвестно' }}</span>
+                {% set types = {'leave':'Отпуск','sick':'Больничный','unpaid_leave':'Отпуск б/с','dismissal':'Увольнение'} %}
+                <span class="text-gray-500 ml-2">— {{ types.get(r.request_type, r.request_type) }}</span>
+                {% if r.start_date %}<span class="text-gray-400 text-sm ml-2">{{ r.start_date }} — {{ r.end_date }}</span>{% endif %}
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="badge {% if r.status == 'approved' %}bg-emerald-100 text-emerald-700{% elif r.status == 'rejected' %}bg-red-100 text-red-700{% else %}bg-yellow-100 text-yellow-700{% endif %}">
+                    {% set statuses = {'pending':'На рассмотрении','approved':'Одобрено','rejected':'Отклонено'} %}
+                    {{ statuses.get(r.status, r.status) }}
+                </span>
+                {% if r.status == 'pending' %}
+                <form method="POST" action="/hr-requests/{{ r.id }}/status" class="inline">
+                    <input type="hidden" name="status" value="approved">
+                    <button type="submit" class="btn-success text-sm !py-1 !px-3">✓</button>
+                </form>
+                <form method="POST" action="/hr-requests/{{ r.id }}/status" class="inline">
+                    <input type="hidden" name="status" value="rejected">
+                    <button type="submit" class="btn-danger text-sm !py-1 !px-3">✗</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% if r.reason %}<p class="text-gray-600 text-sm mt-2">{{ r.reason }}</p>{% endif %}
+    </div>
+    {% else %}
+    <div class="text-center text-gray-500 py-12">Заявления отсутствуют</div>
+    {% endfor %}
+</div>
+{% endblock %}

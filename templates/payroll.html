@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Зарплата — WorkBridge{% endblock %}
+{% block page_title %}Бухгалтерский учёт зарплаты{% endblock %}
+{% block content %}
+<div class="space-y-6">
+    <div class="bg-white rounded-xl p-6 card-shadow">
+        <div class="flex items-center justify-between mb-4">
+            <form method="GET" action="/payroll/" class="flex items-center gap-3">
+                <input type="month" name="month" value="{{ month }}" class="input-field" onchange="this.form.submit()">
+            </form>
+            <div class="flex gap-2">
+                <a href="/payroll/export/csv?month={{ month }}" class="btn-secondary text-sm">📥 CSV</a>
+                <a href="/payroll/export/pdf?month={{ month }}" class="btn-secondary text-sm">📄 PDF</a>
+            </div>
+        </div>
+        <details class="mb-6" x-data="{ open: false }">
+            <summary class="cursor-pointer text-indigo-600 font-medium text-sm" @click="open = !open">+ Добавить запись</summary>
+            <form method="POST" action="/payroll/add" class="mt-4 space-y-4 border-t pt-4">
+                <input type="hidden" name="month" value="{{ month }}">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Сотрудник</label>
+                        <select name="employee_id" required class="input-field">
+                            {% for e in employees %}<option value="{{ e.id }}">{{ e.full_name }}</option>{% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Оклад</label>
+                        <input type="number" name="base_salary" required class="input-field">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Премия</label>
+                        <input type="number" name="bonus" value="0" class="input-field">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Доплаты</label>
+                        <input type="number" name="additional" value="0" class="input-field">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Удержания</label>
+                        <input type="number" name="deductions" value="0" class="input-field">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Аванс</label>
+                        <input type="number" name="advance" value="0" class="input-field">
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary">Добавить</button>
+            </form>
+        </details>
+        {% if payrolls|length > 0 %}
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead><tr class="border-b">
+                    <th class="text-left py-2 text-sm text-gray-500">Сотрудник</th>
+                    <th class="text-right py-2 text-sm text-gray-500">Оклад</th>
+                    <th class="text-right py-2 text-sm text-gray-500">Премия</th>
+                    <th class="text-right py-2 text-sm text-gray-500">Доплаты</th>
+                    <th class="text-right py-2 text-sm text-gray-500">Удержания</th>
+                    <th class="text-right py-2 text-sm text-gray-500">Аванс</th>
+                    <th class="text-right py-2 text-sm text-gray-500 font-bold">К выплате</th>
+                </tr></thead>
+                <tbody>
+                {% for p in payrolls %}
+                <tr class="border-b border-gray-100">
+                    <td class="py-3 text-gray-700">{{ p.employee_name }}</td>
+                    <td class="py-3 text-right text-gray-600">{{ "{:,.0f}".format(p.payroll.base_salary) }}</td>
+                    <td class="py-3 text-right text-gray-600">{{ "{:,.0f}".format(p.payroll.bonus) }}</td>
+                    <td class="py-3 text-right text-gray-600">{{ "{:,.0f}".format(p.payroll.additional) }}</td>
+                    <td class="py-3 text-right text-red-600">{{ "{:,.0f}".format(p.payroll.deductions) }}</td>
+                    <td class="py-3 text-right text-orange-600">{{ "{:,.0f}".format(p.payroll.advance) }}</td>
+                    <td class="py-3 text-right font-bold text-emerald-600">{{ "{:,.0f}".format(p.payroll.net_salary) }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-gray-500 text-center py-6">Записи отсутствуют</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}AI-поиск кандидатов — WorkBridge{% endblock %}
+{% block page_title %}AI-поиск кандидатов{% endblock %}
+{% block content %}
+<div class="space-y-6">
+    <div class="bg-white rounded-xl p-6 card-shadow">
+        <p class="text-gray-600 mb-4">Выберите вакансию, и ИИ найдёт наиболее подходящих кандидатов среди зарегистрированных пользователей.</p>
+        {% if not company %}
+        <div class="bg-amber-50 border border-amber-200 text-amber-700 px-4 py-3 rounded-lg">
+            Сначала <a href="/company/setup" class="underline font-medium">создайте компанию</a>.
+        </div>
+        {% elif vacancies|length == 0 %}
+        <div class="bg-amber-50 border border-amber-200 text-amber-700 px-4 py-3 rounded-lg">
+            Сначала <a href="/vacancies/create" class="underline font-medium">создайте вакансию</a>.
+        </div>
+        {% else %}
+        <form method="POST" action="/ai/candidate-search" class="flex items-end gap-4">
+            <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Вакансия</label>
+                <select name="vacancy_id" required class="input-field">
+                    {% for v in vacancies %}<option value="{{ v.id }}" {% if selected_vacancy and selected_vacancy.id == v.id %}selected{% endif %}>{{ v.title }}</option>{% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn-primary">🤖 Найти кандидатов</button>
+        </form>
+        {% endif %}
+    </div>
+    {% if results is defined and results %}
+    <h3 class="font-semibold text-gray-800">Результаты AI-поиска</h3>
+    {% for r in results %}
+        {% if r.get('error') %}
+        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">{{ r.error }}</div>
+        {% else %}
+        <div class="bg-white rounded-xl p-5 card-shadow">
+            <div class="flex items-start justify-between">
+                <div>
+                    <p class="text-lg font-semibold text-gray-800">{% if r.candidate %}{{ r.candidate.full_name }}{% else %}Кандидат #{{ r.candidate_id }}{% endif %}</p>
+                    {% if r.candidate %}<p class="text-gray-500 text-sm">{{ r.candidate.email }}</p>{% endif %}
+                    <p class="text-gray-600 mt-2">{{ r.explanation }}</p>
+                </div>
+                <div class="flex-shrink-0 ml-4">
+                    <div class="w-16 h-16 rounded-full flex items-center justify-center border-4
+                        {% if r.match_percent >= 70 %}border-emerald-400 text-emerald-600{% elif r.match_percent >= 40 %}border-yellow-400 text-yellow-600{% else %}border-red-400 text-red-600{% endif %}">
+                        <span class="text-lg font-bold">{{ r.match_percent }}%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Расчёт аванса — WorkBridge{% endblock %}
+{% block page_title %}Калькулятор аванса{% endblock %}
+{% block content %}
+<div class="max-w-xl">
+    {% if request.query_params.get('submitted') %}
+    <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-6 py-4 rounded-xl mb-6 text-center">
+        ✅ Заявка на аванс отправлена
+    </div>
+    {% endif %}
+    <div class="bg-white rounded-xl p-6 card-shadow">
+        <form method="POST" action="/advance-calculator" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Месячная зарплата</label>
+                    <input type="number" name="monthly_salary" required value="{{ monthly_salary if monthly_salary else '' }}" class="input-field">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Отработанных дней</label>
+                    <input type="number" name="days_worked" required value="{{ days_worked if days_worked else '' }}" class="input-field">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Рабочих дней в месяце</label>
+                    <input type="number" name="working_days" value="{{ working_days if working_days else 22 }}" class="input-field">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Процент аванса</label>
+                    <input type="number" name="advance_percent" step="0.01" value="{{ advance_percent if advance_percent else 0.5 }}" class="input-field">
+                </div>
+            </div>
+            <button type="submit" class="btn-primary w-full">Рассчитать</button>
+        </form>
+        {% if result is defined and result is not none %}
+        <div class="mt-6 p-6 bg-indigo-50 rounded-xl text-center">
+            <p class="text-gray-600 mb-2">Доступный аванс:</p>
+            <p class="text-4xl font-bold text-indigo-600">{{ "{:,.0f}".format(result) }} ₸</p>
+            <form method="POST" action="/advance-request" class="mt-4">
+                <input type="hidden" name="amount" value="{{ result }}">
+                <input type="hidden" name="salary" value="{{ monthly_salary }}">
+                <input type="hidden" name="days_worked" value="{{ days_worked }}">
+                <input type="hidden" name="advance_percent" value="{{ advance_percent }}">
+                <button type="submit" class="btn-success">Отправить заявку на аванс</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Оценки сотрудников — WorkBridge{% endblock %}
+{% block page_title %}Оценки сотрудников{% endblock %}
+{% block content %}
+<div class="space-y-4">
+    {% for emp in employees %}
+    <a href="/reviews/employee/{{ emp.id }}" class="block bg-white rounded-xl p-5 card-shadow hover:shadow-lg transition-shadow">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                    <span class="text-indigo-600 font-medium">{{ emp.full_name[0] }}</span>
+                </div>
+                <div>
+                    <p class="font-medium text-gray-800">{{ emp.full_name }}</p>
+                    <p class="text-sm text-gray-500">{{ emp.email }}</p>
+                </div>
+            </div>
+            <span class="text-indigo-600 text-sm">Оценить →</span>
+        </div>
+    </a>
+    {% else %}
+    <div class="text-center text-gray-500 py-12">Сотрудники не найдены</div>
+    {% endfor %}
+</div>
+{% endblock %}

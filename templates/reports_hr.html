@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Отчёты команды — WorkBridge{% endblock %}
+{% block page_title %}Отчёты команды{% endblock %}
+{% block content %}
+<div class="space-y-6">
+    <div class="bg-white rounded-xl p-6 card-shadow">
+        <form method="POST" action="/reports/summarize" class="flex items-end gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Период для AI-резюме</label>
+                <input type="text" name="period" class="input-field" placeholder="Неделя 12 / Март 2025">
+            </div>
+            <button type="submit" class="btn-primary">🤖 Резюмировать через AI</button>
+        </form>
+    </div>
+    {% if ai_summary is defined and ai_summary %}
+    <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-6">
+        <h3 class="font-semibold text-indigo-800 mb-3">🤖 AI-резюме отчётов</h3>
+        <div class="text-gray-700 whitespace-pre-line">{{ ai_summary }}</div>
+    </div>
+    {% endif %}
+    <div class="space-y-4">
+        {% for r in reports %}
+        <div class="bg-white rounded-xl p-5 card-shadow">
+            <div class="flex items-center justify-between mb-2">
+                <div>
+                    <span class="font-medium text-gray-800">{{ r._user.full_name if r._user else 'Неизвестно' }}</span>
+                    <span class="text-gray-400 text-sm ml-2">{{ r.period }}</span>
+                </div>
+                <span class="text-gray-400 text-sm">{{ r.submitted_at.strftime('%d.%m.%Y') }}</span>
+            </div>
+            <p class="text-sm text-gray-600"><strong>Задачи:</strong> {{ r.tasks_done }}</p>
+            {% if r.blockers %}<p class="text-sm text-gray-600 mt-1"><strong>Блокеры:</strong> {{ r.blockers }}</p>{% endif %}
+            {% if r.plans %}<p class="text-sm text-gray-600 mt-1"><strong>Планы:</strong> {{ r.plans }}</p>{% endif %}
+        </div>
+        {% else %}
+        <div class="text-center text-gray-500 py-12">Отчёты не найдены</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

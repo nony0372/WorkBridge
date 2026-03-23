@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Регистрация — WorkBridge{% endblock %}
+{% block fullpage %}
+<div class="min-h-screen gradient-bg flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-800">Создать аккаунт</h1>
+            <p class="text-gray-500 mt-1">Присоединяйтесь к WorkBridge</p>
+        </div>
+        {% if error %}
+        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">{{ error }}</div>
+        {% endif %}
+        <form method="POST" action="/auth/register" class="space-y-4" x-data="{ role: 'employee' }">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Полное имя</label>
+                <input type="text" name="full_name" required class="input-field" placeholder="Иван Иванов">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input type="email" name="email" required class="input-field" placeholder="your@email.com">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Пароль</label>
+                <input type="password" name="password" required minlength="6" class="input-field" placeholder="Минимум 6 символов">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Роль</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <label class="relative cursor-pointer" @click="role = 'employee'">
+                        <input type="radio" name="role" value="employee" class="peer sr-only" checked>
+                        <div class="border-2 rounded-xl p-4 text-center transition-all peer-checked:border-indigo-600 peer-checked:bg-indigo-50"
+                             :class="role === 'employee' ? 'border-indigo-600 bg-indigo-50' : 'border-gray-200'">
+                            <svg class="w-8 h-8 mx-auto mb-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                            <span class="text-sm font-medium">Сотрудник</span>
+                        </div>
+                    </label>
+                    <label class="relative cursor-pointer" @click="role = 'hr'">
+                        <input type="radio" name="role" value="hr" class="peer sr-only">
+                        <div class="border-2 rounded-xl p-4 text-center transition-all peer-checked:border-indigo-600 peer-checked:bg-indigo-50"
+                             :class="role === 'hr' ? 'border-indigo-600 bg-indigo-50' : 'border-gray-200'">
+                            <svg class="w-8 h-8 mx-auto mb-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                            <span class="text-sm font-medium">Компания / HR</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            <button type="submit" class="btn-primary w-full !py-3">Зарегистрироваться</button>
+        </form>
+        <p class="text-center text-sm text-gray-500 mt-6">
+            Уже есть аккаунт? <a href="/auth/login" class="text-indigo-600 hover:text-indigo-700 font-medium">Войти</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Анонимное сообщение — WorkBridge{% endblock %}
+{% block page_title %}Анонимное сообщение HR-директору{% endblock %}
+{% block content %}
+<div class="max-w-xl mx-auto">
+    {% if request.query_params.get('sent') %}
+    <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-6 py-4 rounded-xl mb-6 text-center">
+        ✅ Сообщение отправлено анонимно
+    </div>
+    {% endif %}
+    <div class="bg-white rounded-xl p-6 card-shadow">
+        <div class="bg-amber-50 border border-amber-200 text-amber-700 px-4 py-3 rounded-lg mb-4 text-sm">
+            🔒 Ваши данные <strong>не сохраняются</strong>. Сообщение полностью анонимно — HR увидит только текст и временную метку.
+        </div>
+        <form method="POST" action="/anonymous" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Выберите компанию</label>
+                <select name="company_id" required class="input-field">
+                    {% for c in companies %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Сообщение</label>
+                <textarea name="message" rows="5" required class="input-field" placeholder="Ваше сообщение..."></textarea>
+            </div>
+            <button type="submit" class="btn-primary w-full">Отправить анонимно</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

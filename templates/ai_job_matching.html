@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}AI-подбор вакансий — WorkBridge{% endblock %}
+{% block page_title %}AI-подбор вакансий{% endblock %}
+{% block content %}
+<div class="space-y-6">
+    <div class="bg-white rounded-xl p-6 card-shadow">
+        {% if not profile or not profile.skills %}
+        <div class="bg-amber-50 border border-amber-200 text-amber-700 px-4 py-3 rounded-lg mb-4">
+            ⚠️ Для работы AI-подбора заполните ваш <a href="/profile" class="underline font-medium">профиль</a> (навыки, опыт, город).
+        </div>
+        {% endif %}
+        <p class="text-gray-600 mb-4">ИИ проанализирует ваш профиль и найдёт наиболее подходящие вакансии с объяснением совпадения.</p>
+        <form method="POST" action="/ai/job-matching">
+            <button type="submit" class="btn-primary" {% if not profile or not profile.skills %}disabled{% endif %}>
+                🤖 Найти подходящие вакансии
+            </button>
+        </form>
+    </div>
+    {% if results is defined and results %}
+    <h3 class="font-semibold text-gray-800">Результаты AI-подбора</h3>
+    {% for r in results %}
+        {% if r.get('error') %}
+        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">{{ r.error }}</div>
+        {% else %}
+        <div class="bg-white rounded-xl p-5 card-shadow">
+            <div class="flex items-start justify-between">
+                <div>
+                    <a href="/vacancies/{{ r.vacancy_id }}" class="text-lg font-semibold text-indigo-600 hover:text-indigo-700">
+                        {% if r.vacancy %}{{ r.vacancy.title }}{% else %}Вакансия #{{ r.vacancy_id }}{% endif %}
+                    </a>
+                    {% if r.vacancy %}<p class="text-gray-500 text-sm">{{ r.vacancy.city }}</p>{% endif %}
+                    <p class="text-gray-600 mt-2">{{ r.explanation }}</p>
+                </div>
+                <div class="flex-shrink-0 ml-4">
+                    <div class="w-16 h-16 rounded-full flex items-center justify-center border-4
+                        {% if r.match_percent >= 70 %}border-emerald-400 text-emerald-600{% elif r.match_percent >= 40 %}border-yellow-400 text-yellow-600{% else %}border-red-400 text-red-600{% endif %}">
+                        <span class="text-lg font-bold">{{ r.match_percent }}%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

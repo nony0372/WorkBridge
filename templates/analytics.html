@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Аналитика — WorkBridge{% endblock %}
+{% block page_title %}Аналитика сотрудников{% endblock %}
+{% block content %}
+<div class="space-y-6">
+    <div class="bg-white rounded-xl p-6 card-shadow">
+        <canvas id="analyticsChart" height="80"></canvas>
+    </div>
+    <div class="overflow-x-auto bg-white rounded-xl p-6 card-shadow">
+        <table class="w-full">
+            <thead><tr class="border-b">
+                <th class="text-left py-2 text-sm text-gray-500">Сотрудник</th>
+                <th class="text-center py-2 text-sm text-gray-500">Дней посещений</th>
+                <th class="text-center py-2 text-sm text-gray-500">Средний балл</th>
+                <th class="text-center py-2 text-sm text-gray-500">Заявлений</th>
+            </tr></thead>
+            <tbody>
+            {% for a in analytics %}
+            <tr class="border-b border-gray-100">
+                <td class="py-3 text-gray-700">{{ a.employee.full_name }}</td>
+                <td class="py-3 text-center">{{ a.attendance_days }}</td>
+                <td class="py-3 text-center"><span class="badge {% if a.avg_score >= 4 %}bg-emerald-100 text-emerald-700{% elif a.avg_score >= 2.5 %}bg-yellow-100 text-yellow-700{% else %}bg-red-100 text-red-700{% endif %}">{{ a.avg_score }}</span></td>
+                <td class="py-3 text-center">{{ a.requests_count }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    const names = {{ analytics|map(attribute='employee')|map(attribute='full_name')|list|tojson }};
+    const scores = {{ analytics|map(attribute='avg_score')|list|tojson }};
+    const attendance = {{ analytics|map(attribute='attendance_days')|list|tojson }};
+    new Chart(document.getElementById('analyticsChart'), {
+        type: 'bar',
+        data: {
+            labels: names,
+            datasets: [
+                { label: 'Средний балл', data: scores, backgroundColor: 'rgba(79,70,229,0.7)' },
+                { label: 'Дней посещений', data: attendance, backgroundColor: 'rgba(16,185,129,0.7)' }
+            ]
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+    });
+</script>
+{% endblock %}

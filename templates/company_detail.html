@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ company.name }} — WorkBridge{% endblock %}
+{% block page_title %}{{ company.name }}{% endblock %}
+{% block content %}
+<div class="max-w-3xl space-y-6">
+    <div class="bg-white rounded-xl p-6 card-shadow">
+        <h2 class="text-2xl font-bold text-gray-800">{{ company.name }}</h2>
+        <p class="text-gray-500">{{ company.industry }} · {{ company.city }}</p>
+        <p class="text-gray-600 mt-3">{{ company.description }}</p>
+        <div class="flex items-center gap-4 mt-4">
+            <span class="text-3xl font-bold text-indigo-600">{{ avg_rating }}</span>
+            <div class="flex text-yellow-400 text-xl">{% for i in range(5) %}{% if i < avg_rating|round %}★{% else %}☆{% endif %}{% endfor %}</div>
+            <span class="text-gray-400">({{ reviews|length }} отзывов)</span>
+        </div>
+        <a href="/reviews/company/{{ company.id }}" class="text-indigo-600 hover:text-indigo-700 text-sm mt-3 inline-block">Все отзывы →</a>
+    </div>
+    {% if vacancies|length > 0 %}
+    <div class="bg-white rounded-xl p-6 card-shadow">
+        <h3 class="font-semibold text-gray-800 mb-4">Вакансии</h3>
+        {% for v in vacancies %}
+        <a href="/vacancies/{{ v.id }}" class="block p-4 border border-gray-100 rounded-lg mb-2 hover:bg-gray-50">
+            <span class="font-medium text-indigo-600">{{ v.title }}</span>
+            <span class="text-gray-400 text-sm ml-2">{{ v.city }} · {{ v.salary_min|int }}-{{ v.salary_max|int }} ₸</span>
+        </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

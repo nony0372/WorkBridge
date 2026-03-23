@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Опрос eNPS — WorkBridge{% endblock %}
+{% block page_title %}Опрос eNPS{% endblock %}
+{% block content %}
+<div class="max-w-xl mx-auto">
+    <div class="bg-white rounded-xl p-6 card-shadow">
+        {% if existing %}
+        <div class="text-center py-8">
+            <div class="text-5xl mb-4">✅</div>
+            <h3 class="text-xl font-bold text-gray-800">Спасибо за ответ!</h3>
+            <p class="text-gray-500 mt-2">Ваша оценка: {{ existing.score }}/10</p>
+        </div>
+        {% else %}
+        <div class="text-center mb-6">
+            <h3 class="text-lg font-semibold text-gray-800">{{ company.name if company else 'Компания' }}</h3>
+            <p class="text-gray-600 mt-2">По шкале от 0 до 10, насколько вероятно, что вы порекомендуете эту компанию как место работы?</p>
+        </div>
+        <form method="POST" action="/enps/respond/{{ survey.id }}" class="space-y-6" x-data="{ score: 7 }">
+            <div class="flex justify-center gap-1">
+                {% for i in range(11) %}
+                <button type="button" @click="score = {{ i }}"
+                        class="w-10 h-10 rounded-lg text-sm font-medium transition-all"
+                        :class="score === {{ i }} ? '{% if i <= 6 %}bg-red-500 text-white{% elif i <= 8 %}bg-yellow-500 text-white{% else %}bg-emerald-500 text-white{% endif %}' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'">
+                    {{ i }}
+                </button>
+                {% endfor %}
+            </div>
+            <div class="flex justify-between text-xs text-gray-400 px-1">
+                <span>Маловероятно</span>
+                <span>Очень вероятно</span>
+            </div>
+            <input type="hidden" name="score" :value="score">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Комментарий (необязательно)</label>
+                <textarea name="comment" rows="3" class="input-field"></textarea>
+            </div>
+            <button type="submit" class="btn-primary w-full">Отправить</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

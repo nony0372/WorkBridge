@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Настройка компании — WorkBridge{% endblock %}
+{% block page_title %}{% if company %}Редактировать компанию{% else %}Создать компанию{% endif %}{% endblock %}
+{% block content %}
+<div class="max-w-2xl">
+    <div class="bg-white rounded-xl p-6 card-shadow">
+        <form method="POST" action="/company/setup" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Название компании</label>
+                <input type="text" name="name" required value="{{ company.name if company else '' }}" class="input-field">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Отрасль</label>
+                <input type="text" name="industry" value="{{ company.industry if company else '' }}" class="input-field">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Город</label>
+                <input type="text" name="city" value="{{ company.city if company else '' }}" class="input-field">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Описание</label>
+                <textarea name="description" rows="4" class="input-field">{{ company.description if company else '' }}</textarea>
+            </div>
+            <button type="submit" class="btn-primary">{{ 'Сохранить' if company else 'Создать' }}</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

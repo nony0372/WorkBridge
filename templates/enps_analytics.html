@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Аналитика eNPS — WorkBridge{% endblock %}
+{% block page_title %}Аналитика eNPS{% endblock %}
+{% block content %}
+<div class="space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white rounded-xl p-6 card-shadow text-center">
+            <p class="text-gray-500 text-sm">eNPS</p>
+            <p class="text-4xl font-bold {% if enps_score >= 0 %}text-emerald-600{% else %}text-red-600{% endif %}">{{ enps_score }}</p>
+        </div>
+        <div class="bg-white rounded-xl p-6 card-shadow text-center">
+            <p class="text-gray-500 text-sm">Сторонники (9-10)</p>
+            <p class="text-3xl font-bold text-emerald-600">{{ promoters_pct }}%</p>
+        </div>
+        <div class="bg-white rounded-xl p-6 card-shadow text-center">
+            <p class="text-gray-500 text-sm">Нейтральные (7-8)</p>
+            <p class="text-3xl font-bold text-yellow-600">{{ passives_pct }}%</p>
+        </div>
+        <div class="bg-white rounded-xl p-6 card-shadow text-center">
+            <p class="text-gray-500 text-sm">Критики (0-6)</p>
+            <p class="text-3xl font-bold text-red-600">{{ detractors_pct }}%</p>
+        </div>
+    </div>
+    {% if trend|length > 1 %}
+    <div class="bg-white rounded-xl p-6 card-shadow">
+        <h3 class="font-semibold text-gray-800 mb-4">Динамика eNPS</h3>
+        <canvas id="enpsChart" height="100"></canvas>
+    </div>
+    <script>
+        new Chart(document.getElementById('enpsChart'), {
+            type: 'line',
+            data: {
+                labels: {{ trend|map(attribute='date')|list|tojson }},
+                datasets: [{
+                    label: 'eNPS',
+                    data: {{ trend|map(attribute='score')|list|tojson }},
+                    borderColor: '#4F46E5', backgroundColor: 'rgba(79,70,229,0.1)',
+                    fill: true, tension: 0.3
+                }]
+            },
+            options: { scales: { y: { min: -100, max: 100 } }, plugins: { legend: { display: false } } }
+        });
+    </script>
+    {% endif %}
+    <div class="flex gap-3">
+        <a href="/enps/export/{{ survey.id }}/pdf" class="btn-primary">📄 Экспорт PDF</a>
+        <a href="/enps/" class="btn-secondary">← Назад</a>
+    </div>
+</div>
+{% endblock %}
